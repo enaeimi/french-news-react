@@ -1,0 +1,42 @@
+# french-news-react — La Revue
+
+Latest news from **Le Monde** and **franceinfo**, built with **React + Vite + TypeScript**: a newspaper-style front page with a featured article, then each article with its picture beside the title and its lead text.
+
+**Live site:** https://enaeimi.github.io/french-news-react/
+
+## Features
+
+- "À la une" featured article, then a two-column list (picture · title · lead text)
+- Filter by source (Le Monde / franceinfo) and category, plus full-text search
+- Coloured source badges, relative times ("il y a 12 minutes"), French date formatting (Europe/Paris)
+- Placeholder when an article has no image; light and dark themes; mobile layout
+- Reloads the news every 5 minutes
+
+## How it works
+
+Browsers can't read these RSS feeds directly (CORS), so the news is fetched at build time:
+
+1. `.github/workflows/deploy.yml` runs **every 30 minutes**, on every push to `main`, and on demand.
+2. `scripts/fetch-news.mjs` reads the RSS feed(s) and writes `public/news.json`: title, lead text, image (`media:content`, `enclosure` or `<img>`), category and date. When an article has no image or lead text in the feed, the script reads `og:image` / `og:description` from the article page (25 articles at most per run).
+3. The app is built and deployed to **GitHub Pages**. If every feed fails, the job fails and the previous version stays online.
+
+Feeds: `https://www.lemonde.fr/rss/une.xml`, `https://www.francetvinfo.fr/titres.rss` (each with a fallback feed).
+
+## Setup on GitHub
+
+**Settings → Pages → Source: "GitHub Actions"** (not "Deploy from a branch"), then Actions → *Fetch news and deploy to GitHub Pages* → *Run workflow*.
+
+## Local development
+
+```bash
+npm install
+npm run fetch-news   # writes public/news.json
+npm run dev
+```
+
+## Limitations
+
+- News is at most ~30 minutes old; GitHub can delay scheduled runs.
+- GitHub disables scheduled workflows in public repos after 60 days without activity; re-enable it from the Actions tab.
+- The lead text is the one the publisher puts in its feed (not an AI summary).
+- All content belongs to its publishers; every article links back to the original site.
