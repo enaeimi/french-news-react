@@ -10,6 +10,7 @@ Latest news from **Le Monde** and **franceinfo**, built with **React + Vite + Ty
 - Filter by source (Le Monde / franceinfo) and category, plus full-text search
 - Coloured source badges, relative times ("il y a 12 minutes"), French date formatting (Europe/Paris)
 - Placeholder when an article has no image; light and dark themes; mobile layout
+- Pagination: 12 articles per page after the featured story
 - Reloads the news every 5 minutes
 
 ## How it works
